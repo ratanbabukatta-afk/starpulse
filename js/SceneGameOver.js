@@ -267,6 +267,66 @@ class SceneGameOver extends Phaser.Scene {
         ).setOrigin(0.5);
 
         // =====================================================
+// AI REPORT
+// =====================================================
+
+const aiReportText = this.add.text(
+
+    W / 2,
+
+    py(0.74),
+
+    "Loading AI Report...",
+
+    {
+        fontFamily: "monospace",
+        fontSize: "14px",
+        color: "#ffffff",
+        align: "center"
+    }
+
+).setOrigin(0.5);
+
+fetch("ai_output.json")
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        aiReportText.setText([
+
+    "AI REPORT",
+
+    "Attention: " + data.attention_score,
+    "Stress: " + data.stress_score,
+    "Blinks: " + data.blink_count,
+    "Distraction: " + data.distraction,
+
+    "Focus IQ: " + data.focus_intelligence,
+    "Reaction IQ: " + data.reaction_intelligence,
+    "Stability: " + data.cognitive_stability,
+
+    "Decision: " + data.decision_style,
+    "Player Type: " + data.player_type,
+    "Risk: " + data.performance_risk
+
+]);
+    })
+
+    .catch(error => {
+
+        aiReportText.setText([
+            "AI REPORT",
+            "Unable to load AI data"
+        ]);
+
+        console.log("AI JSON Load Error:", error);
+
+    });
+
+    
+
+        // =====================================================
         // BUTTONS
         // =====================================================
 

@@ -109,7 +109,10 @@ class ChaserShip extends Entity {
   constructor(scene, x, y) {
     super(scene, x, y, "sprEnemy1", "ChaserShip");
 
-    this.body.velocity.y = Phaser.Math.Between(50, 100);
+    this.body.velocity.y =
+    Phaser.Math.Between(50, 100)
+    *
+    this.scene.enemySpeedMultiplier;
 
     this.states = {
       MOVE_DOWN: "MOVE_DOWN",
@@ -136,7 +139,10 @@ class ChaserShip extends Entity {
 
         var angle = Math.atan2(dy, dx);
 
-        var speed = 100;
+        var speed =
+    100
+    *
+    this.scene.enemySpeedMultiplier;
         this.body.setVelocity(
           Math.cos(angle) * speed,
           Math.sin(angle) * speed
@@ -158,7 +164,10 @@ class GunShip extends Entity {
     super(scene, x, y, "sprEnemy0", "GunShip");
     this.play("sprEnemy0");
 
-    this.body.velocity.y = Phaser.Math.Between(50, 100);
+    this.body.velocity.y =
+    Phaser.Math.Between(50, 100)
+    *
+    this.scene.enemySpeedMultiplier;
 
     this.shootTimer = this.scene.time.addEvent({
       delay: 1000,
