@@ -271,7 +271,7 @@
 
           console.log("Game Time =", this.gameTime);
 
-          if (this.gameTime === 30) {
+          if (this.gameTime ===3) {
 
               console.log("REACHED 30 SECONDS");
 
