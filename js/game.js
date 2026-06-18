@@ -18,7 +18,8 @@ var config = {
     SceneMainMenu,
     SceneBriefing,
     SceneMain,
-    SceneGameOver
+    SceneGameOver,
+    SceneAIReport
   ],
   pixelArt: true,
   roundPixels: true

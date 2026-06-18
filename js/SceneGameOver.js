@@ -83,26 +83,29 @@ class SceneGameOver extends Phaser.Scene {
 
         const title = this.add.text(
             W / 2,
-            py(0.16),
+            py(0.15),
             "MISSION OVER",
             {
                 fontFamily: "monospace",
-                fontSize: "58px",
+                fontSize: "56px",
                 fontStyle: "bold",
                 color: "#ffffff"
             }
         ).setOrigin(0.5);
 
-        // divider
+        // =====================================================
+        // DIVIDER
+        // =====================================================
+
         const line = this.add.graphics();
 
         line.lineStyle(1, 0x334155, 0.5);
 
         line.lineBetween(
             px(0.25),
-            py(0.24),
+            py(0.23),
             px(0.75),
-            py(0.24)
+            py(0.23)
         );
 
         // =====================================================
@@ -114,41 +117,41 @@ class SceneGameOver extends Phaser.Scene {
         scorePanel.fillStyle(0x0f172a, 0.98);
 
         scorePanel.fillRoundedRect(
-            W / 2 - 150,
-            py(0.36) - 45,
-            300,
-            90,
-            10
+            W / 2 - 180,
+            py(0.33) - 50,
+            360,
+            100,
+            12
         );
 
         scorePanel.lineStyle(2, 0x334155, 0.8);
 
         scorePanel.strokeRoundedRect(
-            W / 2 - 150,
-            py(0.36) - 45,
-            300,
-            90,
-            10
+            W / 2 - 180,
+            py(0.33) - 50,
+            360,
+            100,
+            12
         );
 
         this.add.text(
             W / 2,
-            py(0.33),
+            py(0.29),
             "FINAL SCORE",
             {
                 fontFamily: "monospace",
-                fontSize: "12px",
+                fontSize: "14px",
                 color: "#94a3b8"
             }
         ).setOrigin(0.5);
 
         this.scoreText = this.add.text(
             W / 2,
-            py(0.37),
+            py(0.34),
             "000000",
             {
                 fontFamily: "monospace",
-                fontSize: "40px",
+                fontSize: "46px",
                 fontStyle: "bold",
                 color: "#ffffff"
             }
@@ -185,41 +188,41 @@ class SceneGameOver extends Phaser.Scene {
             panel.fillStyle(0x111827, 0.98);
 
             panel.fillRoundedRect(
-                x - 65,
-                py(0.52) - 35,
-                130,
-                70,
+                x - 70,
+                py(0.49) - 40,
+                140,
+                80,
                 10
             );
 
             panel.lineStyle(2, 0x334155, 0.7);
 
             panel.strokeRoundedRect(
-                x - 65,
-                py(0.52) - 35,
-                130,
-                70,
+                x - 70,
+                py(0.49) - 40,
+                140,
+                80,
                 10
             );
 
             this.add.text(
                 x,
-                py(0.50),
+                py(0.465),
                 s.label,
                 {
                     fontFamily: "monospace",
-                    fontSize: "11px",
+                    fontSize: "12px",
                     color: "#94a3b8"
                 }
             ).setOrigin(0.5);
 
             this.add.text(
                 x,
-                py(0.54),
+                py(0.51),
                 `${s.value}${s.suffix}`,
                 {
                     fontFamily: "monospace",
-                    fontSize: "22px",
+                    fontSize: "24px",
                     color: "#ffffff",
                     fontStyle: "bold"
                 }
@@ -237,117 +240,66 @@ class SceneGameOver extends Phaser.Scene {
         rankPanel.fillStyle(0x052e2b, 0.98);
 
         rankPanel.fillRoundedRect(
-            W / 2 - 120,
-            py(0.67) - 22,
-            240,
-            44,
+            W / 2 - 140,
+            py(0.61) - 24,
+            280,
+            48,
             8
         );
 
         rankPanel.lineStyle(2, 0x00ff99, 0.3);
 
         rankPanel.strokeRoundedRect(
-            W / 2 - 120,
-            py(0.67) - 22,
-            240,
-            44,
+            W / 2 - 140,
+            py(0.61) - 24,
+            280,
+            48,
             8
         );
 
         this.add.text(
             W / 2,
-            py(0.67),
+            py(0.61),
             `RANK : ${rank}`,
             {
                 fontFamily: "monospace",
-                fontSize: "18px",
+                fontSize: "20px",
                 color: "#00ff99",
                 fontStyle: "bold"
             }
         ).setOrigin(0.5);
 
-        // =====================================================
-// AI REPORT
-// =====================================================
-
-const aiReportText = this.add.text(
-
-    W / 2,
-
-    py(0.74),
-
-    "Loading AI Report...",
-
-    {
-        fontFamily: "monospace",
-        fontSize: "14px",
-        color: "#ffffff",
-        align: "center"
-    }
-
-).setOrigin(0.5);
-
-fetch("ai_output.json")
-
-    .then(response => response.json())
-
-    .then(data => {
-
-        aiReportText.setText([
-
-    "AI REPORT",
-
-    "Attention: " + data.attention_score,
-    "Stress: " + data.stress_score,
-    "Blinks: " + data.blink_count,
-    "Distraction: " + data.distraction,
-
-    "Focus IQ: " + data.focus_intelligence,
-    "Reaction IQ: " + data.reaction_intelligence,
-    "Stability: " + data.cognitive_stability,
-
-    "Decision: " + data.decision_style,
-    "Player Type: " + data.player_type,
-    "Risk: " + data.performance_risk
-
-]);
-    })
-
-    .catch(error => {
-
-        aiReportText.setText([
-            "AI REPORT",
-            "Unable to load AI data"
-        ]);
-
-        console.log("AI JSON Load Error:", error);
-
-    });
-
-    
-
+      
         // =====================================================
         // BUTTONS
         // =====================================================
 
         this._makeButton(
-            W / 2 - 120,
-            py(0.82),
-            "↺  RETRY",
-            () => {
-                this.scene.start("SceneBriefing");
+    W / 2 - 120,
+    py(0.78),
+    "📊  AI REPORT",
+    () => {
+
+        this.scene.start(
+            "SceneAIReport",
+            {
+                score: this.finalScore,
+                waves: this.waves,
+                kills: this.kills,
+                accuracy: this.accuracy
             }
         );
+    }
+);
 
-        this._makeButton(
-            W / 2 + 120,
-            py(0.82),
-            "⬡  MENU",
-            () => {
-                this.scene.start("SceneMainMenu");
-            }
-        );
-
+this._makeButton(
+    W / 2 + 120,
+    py(0.78),
+    "↺  RETRY",
+    () => {
+        this.scene.start("SceneBriefing");
+    }
+);
         // =====================================================
         // FOOTER
         // =====================================================
@@ -355,7 +307,7 @@ fetch("ai_output.json")
         this.add.text(
             W - 20,
             H - 18,
-            "GAME DEVELOPMENT • RATAN",
+            "STARPULSE • AI ANALYTICS",
             {
                 fontFamily: "monospace",
                 fontSize: "12px",
@@ -400,10 +352,10 @@ fetch("ai_output.json")
             border.lineStyle(2, 0x475569, a);
 
             border.strokeRoundedRect(
-                cx - 80,
-                cy - 18,
-                160,
-                36,
+                cx - 90,
+                cy - 20,
+                180,
+                40,
                 6
             );
         };
@@ -413,8 +365,8 @@ fetch("ai_output.json")
         const fill = this.add.rectangle(
             cx,
             cy,
-            156,
-            32,
+            176,
+            36,
             0x111827,
             0.98
         );
@@ -425,7 +377,7 @@ fetch("ai_output.json")
             label,
             {
                 fontFamily: "monospace",
-                fontSize: "15px",
+                fontSize: "16px",
                 color: "#94a3b8",
                 fontStyle: "bold"
             }
@@ -538,4 +490,3 @@ fetch("ai_output.json")
         });
     }
 }
-
