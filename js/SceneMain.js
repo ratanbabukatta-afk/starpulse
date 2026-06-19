@@ -144,9 +144,17 @@
 
   // AI METRICS
 
-  this.playerMovement = 0;
-  this.playerCollisions = 0;
-  this.playerSkill = null;
+  // AI METRICS
+
+this.playerMovement = 0;
+this.playerCollisions = 0;
+this.playerSkill = null;
+
+// NEW REAL GAME METRICS
+
+this.nearMisses = 0;
+this.dodgedEnemies = 0;
+this.survivalStartTime = this.time.now;
 
 
       // =====================================================
@@ -256,6 +264,43 @@
   this.gameTime = 0;
   this.enemySpawnRate = 1000;
   this.enemySpeedMultiplier = 1;
+  this.liveAttention = 100;
+  this.liveStress = 0;
+  this.liveBlinks = 0;
+  this.liveDistraction = "LOW";
+  this.time.addEvent({
+
+    delay: 1000,
+
+    callback: function () {
+
+        fetch("ai_output.json")
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                this.liveAttention = data.attention_score;
+                this.liveStress = data.stress_score;
+                this.liveBlinks = data.blink_count;
+                this.liveDistraction = data.distraction;
+
+                console.log(
+                    "LIVE AI:",
+                    this.liveAttention,
+                    this.liveStress,
+                    this.liveBlinks,
+                    this.liveDistraction
+                );
+
+            });
+
+    },
+
+    callbackScope: this,
+
+    loop: true
+});
       // =====================================================
   // ENEMY SPAWNING
   // =====================================================
@@ -272,7 +317,7 @@
 
           console.log("Game Time =", this.gameTime);
 
-          if (this.gameTime ===3) {
+          if (this.gameTime ===15) {
 
               console.log("REACHED 30 SECONDS");
 
@@ -459,16 +504,19 @@
 
           if (enemy !== null) {
 
-            enemy.setScale(
+    enemy.setScale(
 
-              Phaser.Math.FloatBetween(
-                1,
-                1.8
-              )
-            );
+      Phaser.Math.FloatBetween(
+        1,
+        1.8
+      )
+    );
 
-            this.enemies.add(enemy);
-          }
+    enemy.setData("nearMissCounted", false);
+    enemy.setData("dodgedCounted", false);
+
+    this.enemies.add(enemy);
+}
 
         },
 
@@ -578,33 +626,79 @@
 
     triggerGameOver() {
 
-      if (this.gameOverTriggered) return;
+    if (this.gameOverTriggered) return;
 
-      this.gameOverTriggered = true;
+    this.gameOverTriggered = true;
 
-      this.time.delayedCall(1000, () => {
+    this.time.delayedCall(1000, () => {
+
+        let survivalTime = Math.round(
+            (this.time.now - this.survivalStartTime) / 1000
+        );
+
+        let dodgeEfficiency =
+            this.waveNumber > 0
+                ? Math.round(
+                    (this.dodgedEnemies / this.waveNumber) * 100
+                )
+                : 0;
+
+        let accuracy =
+            this.shotsFired > 0
+                ? Math.round(
+                    (this.hitsLanded / this.shotsFired) * 100
+                )
+                : 0;
+
+        localStorage.setItem(
+            "gameplay_metrics",
+            JSON.stringify({
+
+                score: this.score,
+
+                survival_time: survivalTime,
+
+                collisions: this.playerCollisions,
+
+                near_misses: this.nearMisses,
+
+                movement_count: this.playerMovement,
+
+                dodge_efficiency: dodgeEfficiency,
+
+                kills: this.killCount,
+
+                waves: this.waveNumber,
+
+                accuracy: accuracy,
+
+                attention_score: this.liveAttention,
+
+                stress_score: this.liveStress,
+
+                blink_count: this.liveBlinks,
+
+                distraction: this.liveDistraction,
+
+                player_skill: this.playerSkill
+            })
+        );
 
         this.scene.start(
-          "SceneGameOver",
-          {
-            score: this.score,
+            "SceneGameOver",
+            {
+                score: this.score,
 
-            waves: this.waveNumber,
+                waves: this.waveNumber,
 
-            kills: this.killCount,
+                kills: this.killCount,
 
-            accuracy:
-              this.shotsFired > 0
-                ? Math.round(
-                    this.hitsLanded /
-                    this.shotsFired *
-                    100
-                  )
-                : 0
-          }
+                accuracy: accuracy
+            }
         );
-      });
-    }
+
+    });
+}
 
     // =====================================================
     // GET ENEMIES BY TYPE
@@ -982,6 +1076,31 @@
 
         let enemy =
           this.enemies.getChildren()[i];
+          let distance = Phaser.Math.Distance.Between(
+    enemy.x,
+    enemy.y,
+    this.player.x,
+    this.player.y
+);
+
+if (
+    distance < 90 &&
+    !enemy.getData("nearMissCounted") &&
+    !enemy.getData("isDead") &&
+    !this.player.getData("isDead")
+) {
+    this.nearMisses++;
+    enemy.setData("nearMissCounted", true);
+}
+
+if (
+    enemy.y > this.game.config.height &&
+    !enemy.getData("dodgedCounted") &&
+    !enemy.getData("isDead")
+) {
+    this.dodgedEnemies++;
+    enemy.setData("dodgedCounted", true);
+}
 
         enemy.update();
 

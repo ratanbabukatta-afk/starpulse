@@ -8,24 +8,9 @@ class SceneAIReport extends Phaser.Scene {
 
         const W = this.scale.width;
         const H = this.scale.height;
-
         const py = (p) => H * p;
 
-        // =====================================================
-        // BACKGROUND
-        // =====================================================
-
-        this.add.rectangle(
-            W / 2,
-            H / 2,
-            W,
-            H,
-            0x020617
-        );
-
-        // =====================================================
-        // STARS
-        // =====================================================
+        this.add.rectangle(W / 2, H / 2, W, H, 0x020617);
 
         this.stars = [];
 
@@ -38,100 +23,45 @@ class SceneAIReport extends Phaser.Scene {
                 0xffffff
             );
 
-            star.speed =
-                Phaser.Math.FloatBetween(0.2, 1.2);
-
-            star.setAlpha(
-                Phaser.Math.FloatBetween(0.2, 1)
-            );
+            star.speed = Phaser.Math.FloatBetween(0.2, 1.2);
+            star.setAlpha(Phaser.Math.FloatBetween(0.2, 1));
 
             this.stars.push(star);
         }
 
-        // =====================================================
-        // HEADER
-        // =====================================================
+        this.add.text(W / 2, py(0.06), "— AI NEURAL ANALYTICS —", {
+            fontFamily: "monospace",
+            fontSize: "15px",
+            color: "#94a3b8"
+        }).setOrigin(0.5);
 
-        this.add.text(
-            W / 2,
-            py(0.06),
-            "— AI NEURAL ANALYTICS —",
-            {
-                fontFamily: "monospace",
-                fontSize: "15px",
-                color: "#94a3b8"
-            }
-        ).setOrigin(0.5);
-
-        this.add.text(
-            W / 2,
-            py(0.12),
-            "AI REPORT CARD",
-            {
-                fontFamily: "monospace",
-                fontSize: "46px",
-                color: "#00ffaa",
-                fontStyle: "bold"
-            }
-        ).setOrigin(0.5);
-
-        // =====================================================
-        // MAIN PANEL
-        // =====================================================
+        this.add.text(W / 2, py(0.12), "AI REPORT CARD", {
+            fontFamily: "monospace",
+            fontSize: "46px",
+            color: "#00ffaa",
+            fontStyle: "bold"
+        }).setOrigin(0.5);
 
         const panel = this.add.graphics();
 
         panel.fillStyle(0x0b1220, 0.97);
-
-        panel.fillRoundedRect(
-            W / 2 - 420,
-            py(0.56) - 250,
-            840,
-            500,
-            12
-        );
-
+        panel.fillRoundedRect(W / 2 - 420, py(0.56) - 250, 840, 500, 12);
         panel.lineStyle(2, 0x00ffaa, 0.25);
+        panel.strokeRoundedRect(W / 2 - 420, py(0.56) - 250, 840, 500, 12);
 
-        panel.strokeRoundedRect(
-            W / 2 - 420,
-            py(0.56) - 250,
-            840,
-            500,
-            12
-        );
+        this.add.text(W / 2 - 250, py(0.24), "METRIC", {
+            fontFamily: "monospace",
+            fontSize: "18px",
+            color: "#64748b",
+            fontStyle: "bold"
+        });
 
-        // =====================================================
-        // TABLE HEADER
-        // =====================================================
-
-        this.add.text(
-            W / 2 - 250,
-            py(0.24),
-            "METRIC",
-            {
-                fontFamily: "monospace",
-                fontSize: "18px",
-                color: "#64748b",
-                fontStyle: "bold"
-            }
-        );
-
-        this.add.text(
-            W / 2 + 140,
-            py(0.24),
-            "RESULT",
-            {
-                fontFamily: "monospace",
-                fontSize: "18px",
-                color: "#64748b",
-                fontStyle: "bold"
-            }
-        );
-
-        // =====================================================
-        // LOADING
-        // =====================================================
+        this.add.text(W / 2 + 140, py(0.24), "RESULT", {
+            fontFamily: "monospace",
+            fontSize: "18px",
+            color: "#64748b",
+            fontStyle: "bold"
+        });
 
         const loadingText = this.add.text(
             W / 2,
@@ -144,308 +74,154 @@ class SceneAIReport extends Phaser.Scene {
             }
         ).setOrigin(0.5);
 
-        // =====================================================
-        // LOAD AI DATA
-        // =====================================================
+        const rows = [
 
-        fetch("ai_output.json")
+    { label: "SCORE", key: "score", suffix: "", color: 0x00ffaa },
 
-        .then(response => response.json())
+    { label: "SURVIVAL TIME", key: "survival_time", suffix: " sec", color: 0x38bdf8 },
 
-        .then(data => {
+    { label: "KILLS", key: "kills", suffix: "", color: 0x00ffaa },
 
-            loadingText.destroy();
+    { label: "ACCURACY", key: "accuracy", suffix: "%", color: 0xfacc15 },
 
-            const rows = [
+    { label: "COLLISIONS", key: "collisions", suffix: "", color: 0xef4444 },
 
-                {
-                    label: "ATTENTION SCORE",
-                    value: data.attention_score,
-                    color: 0x00ffaa
-                },
+    { label: "NEAR MISSES", key: "near_misses", suffix: "", color: 0xf59e0b },
 
-                {
-                    label: "STRESS LEVEL",
-                    value: data.stress_score,
-                    color: 0xf59e0b
-                },
+    { label: "MOVEMENT COUNT", key: "movement_count", suffix: "", color: 0x38bdf8 },
 
-                {
-                    label: "BLINK COUNT",
-                    value: data.blink_count,
-                    color: 0x38bdf8
-                },
+    { label: "DODGE EFFICIENCY", key: "dodge_efficiency", suffix: "%", color: 0x00ffaa },
 
-                {
-                    label: "DISTRACTION INDEX",
-                    value: data.distraction,
-                    color: 0xef4444
-                },
+    { label: "ATTENTION SCORE", key: "attention_score", suffix: "", color: 0x00ffaa },
 
-                {
-                    label: "FOCUS IQ",
-                    value: data.focus_intelligence + " IQ",
-                    color: 0x00ffaa
-                },
+    { label: "STRESS LEVEL", key: "stress_score", suffix: "", color: 0xf59e0b },
 
-                {
-                    label: "REACTION IQ",
-                    value: data.reaction_intelligence + " IQ",
-                    color: 0x00ffaa
-                },
+    { label: "BLINK COUNT", key: "blink_count", suffix: "", color: 0x38bdf8 },
 
-                {
-                    label: "COGNITIVE STABILITY",
-                    value: data.cognitive_stability,
-                    color: 0x38bdf8
-                },
+    { label: "DISTRACTION", key: "distraction", suffix: "", color: 0xef4444 }
 
-                {
-                    label: "DECISION STYLE",
-                    value: data.decision_style,
-                    color: 0xfacc15
-                },
+];
 
-                {
-                    label: "PLAYER TYPE",
-                    value: data.player_type,
-                    color: 0xa78bfa
-                },
+        const values = {};
+        let startY = py(0.30);
 
-                {
-                    label: "RISK ANALYSIS",
-                    value: data.performance_risk,
-                    color: 0xef4444
-                }
-            ];
+        rows.forEach((r, i) => {
 
-            let startY = py(0.30);
-
-            rows.forEach((r, i) => {
-
-                this.createMetricRow(
-
-                    W / 2,
-                    startY + i * 38,
-
-                    r.label,
-                    r.value,
-                    r.color
-
-                );
-            });
-        })
-
-        .catch(error => {
-
-            loadingText.setText(
-                "FAILED TO LOAD AI REPORT"
+            values[r.key] = this.createMetricRow(
+                W / 2,
+                startY + i * 38,
+                r.label,
+                "Loading",
+                r.color
             );
-
-            console.log(error);
-
         });
 
-        // =====================================================
-        // BUTTON
-        // =====================================================
+        const updateAIReport = () => {
+
+    const gameplayData = JSON.parse(
+        localStorage.getItem("gameplay_metrics")
+    );
+
+    if (!gameplayData) {
+        return;
+    }
+
+    if (loadingText.active) {
+        loadingText.destroy();
+    }
+
+    rows.forEach(r => {
+
+        let value = gameplayData[r.key];
+
+        if (value === undefined || value === null) {
+            value = "N/A";
+        }
+
+        values[r.key].setText(value + r.suffix);
+    });
+};
+
+        updateAIReport();
+
+        this.time.addEvent({
+            delay: 1000,
+            callback: updateAIReport,
+            callbackScope: this,
+            loop: true
+        });
 
         this.makeButton(
             W / 2,
             py(0.90),
             "↺ RETURN",
             () => {
-
-                this.scene.start(
-                    "SceneGameOver"
-                );
-
+                this.scene.start("SceneGameOver");
             }
         );
 
-        // =====================================================
-        // FADE IN
-        // =====================================================
-
-        this.cameras.main.fadeIn(
-            500,
-            0,
-            0,
-            0
-        );
+        this.cameras.main.fadeIn(500, 0, 0, 0);
     }
 
-    // =====================================================
-    // METRIC ROW
-    // =====================================================
-
-    createMetricRow(
-        centerX,
-        y,
-        label,
-        value,
-        accent
-    ) {
+    createMetricRow(centerX, y, label, value, accent) {
 
         const row = this.add.graphics();
 
         row.fillStyle(0x111827, 0.95);
+        row.fillRoundedRect(centerX - 350, y - 15, 700, 30, 6);
+        row.lineStyle(1, 0x1e293b, 1);
+        row.strokeRoundedRect(centerX - 350, y - 15, 700, 30, 6);
 
-        row.fillRoundedRect(
-            centerX - 350,
-            y - 15,
-            700,
-            30,
-            6
-        );
-
-        row.lineStyle(
-            1,
-            0x1e293b,
-            1
-        );
-
-        row.strokeRoundedRect(
-            centerX - 350,
-            y - 15,
-            700,
-            30,
-            6
-        );
-
-        // LEFT LABEL
-
-        this.add.text(
-            centerX - 320,
-            y,
-            label,
-            {
-                fontFamily: "monospace",
-                fontSize: "16px",
-                color: "#cbd5e1",
-                fontStyle: "bold"
-            }
-        ).setOrigin(0, 0.5);
-
-        // VALUE BOX
+        this.add.text(centerX - 320, y, label, {
+            fontFamily: "monospace",
+            fontSize: "16px",
+            color: "#cbd5e1",
+            fontStyle: "bold"
+        }).setOrigin(0, 0.5);
 
         const valueBox = this.add.graphics();
 
         valueBox.fillStyle(accent, 0.18);
+        valueBox.fillRoundedRect(centerX + 120, y - 12, 180, 24, 5);
+        valueBox.lineStyle(1, accent, 0.7);
+        valueBox.strokeRoundedRect(centerX + 120, y - 12, 180, 24, 5);
 
-        valueBox.fillRoundedRect(
-            centerX + 120,
-            y - 12,
-            180,
-            24,
-            5
-        );
+        const valueText = this.add.text(centerX + 210, y, value, {
+            fontFamily: "monospace",
+            fontSize: "15px",
+            color: "#ffffff",
+            fontStyle: "bold"
+        }).setOrigin(0.5);
 
-        valueBox.lineStyle(
-            1,
-            accent,
-            0.7
-        );
-
-        valueBox.strokeRoundedRect(
-            centerX + 120,
-            y - 12,
-            180,
-            24,
-            5
-        );
-
-        this.add.text(
-            centerX + 210,
-            y,
-            value,
-            {
-                fontFamily: "monospace",
-                fontSize: "15px",
-                color: "#ffffff",
-                fontStyle: "bold"
-            }
-        ).setOrigin(0.5);
+        return valueText;
     }
 
-    // =====================================================
-    // BUTTON
-    // =====================================================
+    makeButton(x, y, label, callback) {
 
-    makeButton(
-        x,
-        y,
-        label,
-        callback
-    ) {
+        const bg = this.add.rectangle(x, y, 240, 56, 0x111827);
+        bg.setStrokeStyle(2, 0x00ffaa, 0.4);
 
-        const bg = this.add.rectangle(
-            x,
-            y,
-            240,
-            56,
-            0x111827
-        );
+        const txt = this.add.text(x, y, label, {
+            fontFamily: "monospace",
+            fontSize: "18px",
+            color: "#cbd5e1",
+            fontStyle: "bold"
+        }).setOrigin(0.5);
 
-        bg.setStrokeStyle(
-            2,
-            0x00ffaa,
-            0.4
-        );
+        bg.setInteractive({ useHandCursor: true });
 
-        const txt = this.add.text(
-            x,
-            y,
-            label,
-            {
-                fontFamily: "monospace",
-                fontSize: "18px",
-                color: "#cbd5e1",
-                fontStyle: "bold"
-            }
-        ).setOrigin(0.5);
-
-        bg.setInteractive({
-            useHandCursor: true
+        bg.on("pointerover", () => {
+            bg.setFillStyle(0x1e293b);
+            txt.setColor("#ffffff");
         });
 
-        bg.on(
-            "pointerover",
-            () => {
+        bg.on("pointerout", () => {
+            bg.setFillStyle(0x111827);
+            txt.setColor("#cbd5e1");
+        });
 
-                bg.setFillStyle(
-                    0x1e293b
-                );
-
-                txt.setColor(
-                    "#ffffff"
-                );
-            }
-        );
-
-        bg.on(
-            "pointerout",
-            () => {
-
-                bg.setFillStyle(
-                    0x111827
-                );
-
-                txt.setColor(
-                    "#cbd5e1"
-                );
-            }
-        );
-
-        bg.on(
-            "pointerdown",
-            callback
-        );
+        bg.on("pointerdown", callback);
     }
-
-    // =====================================================
-    // UPDATE
-    // =====================================================
 
     update() {
 
@@ -453,11 +229,7 @@ class SceneAIReport extends Phaser.Scene {
 
             star.y += star.speed;
 
-            if (
-                star.y >
-                this.scale.height
-            ) {
-
+            if (star.y > this.scale.height) {
                 star.y = 0;
             }
         });
