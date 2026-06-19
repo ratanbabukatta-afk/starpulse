@@ -268,32 +268,28 @@ this.survivalStartTime = this.time.now;
   this.liveStress = 0;
   this.liveBlinks = 0;
   this.liveDistraction = "LOW";
+
   this.time.addEvent({
 
     delay: 1000,
 
     callback: function () {
 
-        fetch("ai_output.json")
+        if (window.liveAI) {
 
-            .then(response => response.json())
+            this.liveAttention = window.liveAI.attention_score;
+            this.liveStress = window.liveAI.stress_score;
+            this.liveBlinks = window.liveAI.blink_count;
+            this.liveDistraction = window.liveAI.distraction;
 
-            .then(data => {
-
-                this.liveAttention = data.attention_score;
-                this.liveStress = data.stress_score;
-                this.liveBlinks = data.blink_count;
-                this.liveDistraction = data.distraction;
-
-                console.log(
-                    "LIVE AI:",
-                    this.liveAttention,
-                    this.liveStress,
-                    this.liveBlinks,
-                    this.liveDistraction
-                );
-
-            });
+            console.log(
+                "LIVE AI:",
+                this.liveAttention,
+                this.liveStress,
+                this.liveBlinks,
+                this.liveDistraction
+            );
+        }
 
     },
 
